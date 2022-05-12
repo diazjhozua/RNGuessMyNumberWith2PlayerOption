@@ -32,4 +32,5 @@ const styles = StyleSheet.create({
   rootContainer: {
     marginTop: 30,
   },
+
 });

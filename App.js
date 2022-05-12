@@ -6,14 +6,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 
-// import ChooseNumberSinglePlayer from './screens/ChooseNumberSinglePlayer';
 import StartGameScreen from './screens/StartGameScreen';
 import ChooseNumberSingleplayer from './screens/singleplayer/ChooseNumberSingleplayer';
 import ChooseNumberMultiplayer from './screens/multiplayer/ChooseNumberMultiplayer';
+import GameScreenSingleplayer from './screens/singleplayer/GameScreenSingleplayer';
+import GameOverScreen from './screens/GameOverScreen';
 
 export default function App() {
   // state for player vs computer and player vs player
   const [playMode, setPlayMode] = useState();
+  // state for when the user picked a number in singleplayer
+  const [userNumber, setUserNumber] = useState();
+  const [guessRounds, setGuessRounds] = useState(0);
+
+  // state to determine when the game is over 
+  const [gameIsOver, setGameIsOver] = useState(false);
+
+  function pickerSingleNumberHandler(pickerNumber) {
+    console.log('ok')
+    setUserNumber(pickerNumber);
+    // setGameIsOver(false);
+  }
+
 
   let [fontsLoaded] = useFonts({
     'pacifico-regular': require('./assets/fonts/Pacifico-Regular.ttf'),
@@ -27,24 +41,42 @@ export default function App() {
 
   function chooseModeHandler(gameMode) {
     setPlayMode(gameMode);
+    setGameIsOver(false);
   }
+
+  function gameOverHandler(numberOfRounds) {
+    setGameIsOver(true);
+    setGuessRounds(numberOfRounds);
+  }
+
 
   function goToHomeHandler() {
     setPlayMode(null);
+    setGameIsOver(false);
+  }
+
+  function goToChooseNumberSinglePlayerHandler() {
+    console.log("exit");
+    setUserNumber(null);
   }
 
   let screen = <StartGameScreen onPickGameMode={chooseModeHandler} />
 
   if (playMode === "Singleplayer") {
-    screen = <ChooseNumberSingleplayer backPressed={goToHomeHandler} />
-
+    screen = <ChooseNumberSingleplayer backPressed={goToHomeHandler} onPickNumber={pickerSingleNumberHandler} />
   } else if (playMode === "Multiplayer") {
     screen = <ChooseNumberMultiplayer backPressed={goToHomeHandler} />
   }
 
+  if (userNumber) {
+    screen = <GameScreenSingleplayer userNumber={userNumber} backPressed={goToChooseNumberSinglePlayerHandler} onGameOver={gameOverHandler} />
+  }
+
   return (
     <SafeAreaView style={styles.rootScreen}>
-      {screen}
+      {/* {screen} */}
+      <GameOverScreen />
+      {/* <GameScreenSingleplayer userNumber={23} backPressed={goToChooseNumberSinglePlayerHandler} onGameOver={gameOverHandler} /> */}
       <StatusBar style="dark" />
     </SafeAreaView>
   );

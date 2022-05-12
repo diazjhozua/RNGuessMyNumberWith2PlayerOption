@@ -1,12 +1,38 @@
-import { useEffect } from "react";
-import { View, Text, BackHandler, StyleSheet, Image, TextInput } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, BackHandler, StyleSheet, Image, TextInput, Alert } from "react-native";
 import Card from "../../components/ui/Card";
+
 import InstructionTxt from "../../components/ui/InstructionTxt";
 import Title from "../../components/ui/Title";
 import Design from "../../constants/design";
 import PrimaryButton from "../../components/ui/PrimaryButton";
 
-export default function ChooseNumberSingleplayer({ backPressed }) {
+export default function ChooseNumberSingleplayer({ backPressed, onPickNumber }) {
+  const [enteredNumber, setEnteredNumber] = useState('');
+
+  function numberInputHandler(enteredText) {
+    setEnteredNumber(enteredText);
+  }
+
+  function resetInputHandler() {
+    setEnteredNumber('');
+  }
+
+  function confirmInputHandler() {
+    const choosenNumber = parseInt(enteredNumber);
+
+    if (isNaN(choosenNumber) || choosenNumber <= 0 || choosenNumber > 99) {
+      // show alert ....
+      Alert.alert('Invalid Number!', 'Number has to be a number between 1 and 99',
+        [{ text: 'Okay', style: 'destructive', onPress: resetInputHandler }]
+      );
+      return;
+    }
+
+    onPickNumber(choosenNumber);
+  }
+
+
   // backbutton
   const backAction = () => {
     backPressed();
@@ -42,17 +68,17 @@ export default function ChooseNumberSingleplayer({ backPressed }) {
           autoCapitalize='none'
           autoFocus={true}
           autoCorrect={false}
-        // onChangeText={numberInputHandler}
-        // value={enteredNumber}
+          onChangeText={numberInputHandler}
+          value={enteredNumber}
         />
 
         {/* Choose number */}
         <View style={styles.buttonsContainer}>
           <View style={styles.buttonContainer}>
-            <PrimaryButton>Reset</PrimaryButton>
+            <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
           </View>
           <View style={styles.buttonContainer}>
-            <PrimaryButton>Confirm</PrimaryButton>
+            <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
           </View>
         </View>
 
@@ -105,5 +131,4 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
   }
-
 });

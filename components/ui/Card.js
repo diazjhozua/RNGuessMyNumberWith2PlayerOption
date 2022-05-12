@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 
 export default function Card({ children, style }) {
-  return <View style={[styles.inputContainer]}>{children}</View>
+  return <View style={[styles.inputContainer, style]}>{children}</View>
 }
 
 const styles = StyleSheet.create({

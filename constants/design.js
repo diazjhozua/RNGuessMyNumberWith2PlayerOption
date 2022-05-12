@@ -13,6 +13,9 @@ const Design = StyleSheet.create({
   },
   mtSM: {
     marginTop: 16,
+  },
+  resetMarginTop: {
+    marginTop: 0,
   }
 
 });
